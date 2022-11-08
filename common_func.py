@@ -103,11 +103,11 @@ def draw_outer_contour(image):
 
     cv2.imwrite(f"outer_contour_{image}", img)
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
     
-#     lower_color_boundary = np.array([0,120,0])
-#     upper_color_boundary = np.array([22,255,255])
+    lower_color_boundary = np.array([0,120,0])
+    upper_color_boundary = np.array([22,255,255])
 
-#     retrieve_image("test1.jpg", lower_color_boundary, upper_color_boundary)
-#     eliminate_inner_contour("resulted_image.jpg")
-#     draw_outer_contour("eliminate_inner_contour_resulted_image.jpg")
+    retrieve_image("test4.jpg", lower_color_boundary, upper_color_boundary)
+    eliminate_inner_contour("resulted_image.jpg")
+    draw_outer_contour("eliminate_inner_contour_resulted_image.jpg")
