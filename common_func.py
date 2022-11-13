@@ -1,9 +1,12 @@
 import cv2
 import numpy as np
-import math
+import app
+import os
 
-def retrieve_image(image, lower_color_boundary, upper_color_boundary):
+def retrieve_image(lower_color_boundary, upper_color_boundary, given_image, given_image_path, save_image_path):
     
+    image = f"{given_image_path}{given_image}"
+    print(image)
     frame = cv2.imread(image)
 
     # Convert BGR to HSV color scheme
@@ -48,17 +51,19 @@ def retrieve_image(image, lower_color_boundary, upper_color_boundary):
     except:
         pass
 
-    cv2.imwrite('frame.jpg', frame)
-    cv2.imwrite('mask.jpg', mask)
-    cv2.imwrite('resulted_image.jpg', resulted_image)
+    cv2.imwrite(f'{save_image_path}frame.jpg', frame)
+    cv2.imwrite(f'{save_image_path}mask.jpg', mask)
+    cv2.imwrite(f'{save_image_path}1_{given_image}', resulted_image)
 
     print("The area of the wound is: ", arearatio * 0.6615, "cm squared.")
     print("The area of the Custom-Aid is: ", (right - left)*(bottom - top)*2.989*pow(10, -4), "cm squared.")
     print("The length is equal to: ", (right - left) / 95.23, "cm.")
     print("The width is equal to: ", (bottom - top) / 95.23, "cm.")
 
-def eliminate_inner_contour(image):
+def eliminate_inner_contour(given_image, given_image_path, save_image_path, given_image_name):
 
+    image = f"{given_image_path}{given_image}"
+    print(image)
     # Read in the image as grayscale - Note the 0 flag
     im = cv2.imread(image, 0)
 
@@ -76,9 +81,10 @@ def eliminate_inner_contour(image):
 
     # Spawn new windows that shows us the donut
     # (in grayscale) and the detected contour
-    cv2.imwrite(f'eliminate_inner_contour_{image}', out)
+    cv2.imwrite(f"{save_image_path}2_{given_image_name}", out)
 
-def draw_outer_contour(image):
+def draw_outer_contour(given_image, given_image_path, save_image_path, given_image_name):
+    image = f"{given_image_path}{given_image}"
     input = cv2.imread(image)
     gray = cv2.cvtColor(input, cv2.COLOR_BGR2GRAY)
 
@@ -93,7 +99,7 @@ def draw_outer_contour(image):
     approx = cv2.approxPolyDP(cmax, epsilon, True)
     cv2.drawContours(input, [approx], -1, (0, 255, 0), 3)
 
-    cv2.imshow("Contour", input)
+    # cv2.imshow("Contour", input)
 
     width, height = gray.shape
 
@@ -101,13 +107,15 @@ def draw_outer_contour(image):
     img = np.zeros( [width, height, 1],dtype=np.uint8 )
     cv2.fillPoly(img, pts =[cmax], color=(255,255,255))
 
-    cv2.imwrite(f"outer_contour_{image}", img)
+    cv2.imwrite(f"{save_image_path}3_{given_image_name}", img)
 
-if __name__ == "__main__":
+def main(lower_color_boundary, upper_color_boundary, given_image, given_image_path, save_image_path):
+    retrieve_image(lower_color_boundary, upper_color_boundary, given_image, given_image_path, save_image_path)
+    eliminate_inner_contour(f"1_{given_image}", save_image_path, save_image_path, given_image)
+    draw_outer_contour(f"2_{given_image}", save_image_path, save_image_path, given_image)    
+
+# if __name__ == "__main__":
     
-    lower_color_boundary = np.array([0,120,0])
-    upper_color_boundary = np.array([22,255,255])
-
-    retrieve_image("test4.jpg", lower_color_boundary, upper_color_boundary)
-    eliminate_inner_contour("resulted_image.jpg")
-    draw_outer_contour("eliminate_inner_contour_resulted_image.jpg")
+#     lower_color_boundary = np.array([0,150,10])
+#     upper_color_boundary = np.array([5,255,255])
+#     main(lower_color_boundary, upper_color_boundary, "test4.jpg", app.UPLOAD_FOLDER, app.DOWNLOAD_FOLDER)
