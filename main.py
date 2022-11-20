@@ -33,7 +33,7 @@ def upload_image():
 		#print('upload_image filename: ' + filename)
 		flash('Image successfully uploaded and displayed below')
 		data={
-          "processed_img":'static/downloads/'+f'3_{filename}',
+          "processed_img":'static/downloads/'+f'4_{filename}',
           "uploaded_img":'static/uploads/'+filename
        	}
 		return render_template('upload.html', data=data)
