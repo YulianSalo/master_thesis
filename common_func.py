@@ -83,6 +83,7 @@ def eliminate_inner_contour(given_image, given_image_path, save_image_path, give
     # (in grayscale) and the detected contour
     cv2.imwrite(f"{save_image_path}2_{given_image_name}", out)
 
+
 def draw_outer_contour(given_image, given_image_path, save_image_path, given_image_name):
     image = f"{given_image_path}{given_image}"
     input = cv2.imread(image)
@@ -109,10 +110,26 @@ def draw_outer_contour(given_image, given_image_path, save_image_path, given_ima
 
     cv2.imwrite(f"{save_image_path}3_{given_image_name}", img)
 
+
+def draw_final_image(original_image_name, given_image_path, contour_image_name, contour_image_path ,save_image_path):
+    
+    original_image = f"{given_image_path}{original_image_name}"
+    contour_image = f"{contour_image_path}{contour_image_name}"
+
+    original_input = cv2.imread(original_image)
+    contour_input = cv2.imread(contour_image)
+
+    resulted_image = cv2.bitwise_and(original_input, contour_input)
+
+    cv2.imwrite(f"{save_image_path}4_{original_image_name}", resulted_image)
+
+
 def main(lower_color_boundary, upper_color_boundary, given_image, given_image_path, save_image_path):
     retrieve_image(lower_color_boundary, upper_color_boundary, given_image, given_image_path, save_image_path)
     eliminate_inner_contour(f"1_{given_image}", save_image_path, save_image_path, given_image)
     draw_outer_contour(f"2_{given_image}", save_image_path, save_image_path, given_image)    
+    draw_final_image(given_image, given_image_path, f"3_{given_image}", save_image_path, save_image_path)
+
 
 # if __name__ == "__main__":
     
